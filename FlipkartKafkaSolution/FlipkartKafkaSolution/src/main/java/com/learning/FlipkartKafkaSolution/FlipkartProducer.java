@@ -11,24 +11,15 @@ public class FlipkartProducer {
     private KafkaProducer<String, String> producer;
 
     public FlipkartProducer() {
-        this.producer = new KafkaProducer<>(getProducerProperties());
-    }
-
-    private Properties getProducerProperties() {
-        Properties props = new Properties();
-        props.put("bootstrap.servers", "localhost:9092");
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("partitioner.class", OrderPartitioner.class.getName());
-        return props;
+        this.producer = new KafkaProducer<>(FlipkartProperties.getProducerProperties());
     }
 
     public void sendOrders() {
         String topic = "FlipkartOrdersTopic";
         List<OrderModel> orders = List.of(
-            new OrderModel("1", "Book", "Java Programming", 500, "Alice"),
-            new OrderModel("2", "Mobile", "Samsung S21", 70000, "Bob"),
-            new OrderModel("3", "Car", "Tesla Model 3", 5000000, "Charlie")
+            new OrderModel("1", "Book", "Java Programming", 1500, "Alice"),
+            new OrderModel("2", "Mobile", "Samsung S21", 75000, "Bob"),
+            new OrderModel("3", "Car", "Tesla Model 3", 5800000, "Charlie")
         );
 
         for (OrderModel order : orders) {
