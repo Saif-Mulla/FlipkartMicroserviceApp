@@ -11,26 +11,15 @@ public class ReportConsumer {
     
     private KafkaConsumer<String, String> consumer;
 
-    public ReportConsumer() {
-        this.consumer = new KafkaConsumer<>(FlipkartProperties.getConsumerProperties("report_consumer"));
-        consumer.subscribe(Collections.singletonList("ReportTopic"));
-    }
-
-    public void consumeReports() {
-        try {
-            while (true) {
-                ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofSeconds(5));
-                for (ConsumerRecord<String, String> record : consumerRecords) {
-                    System.out.println("Aggregated Report: " + record.value());
-                }
-            }
-        } finally {
-            consumer.close();
-        }
-    }
-
     public static void main(String[] args) {
-        ReportConsumer reportConsumer = new ReportConsumer();
-        reportConsumer.consumeReports();
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(FlipkartProperties.getConsumerProperties());
+        consumer.subscribe(Collections.singletonList("ReportTopic"));
+
+        while (true) {
+            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+            for (ConsumerRecord<String, String> record : records) {
+                System.out.println("Aggregated Order Data: " + record.value());
+            }
+        }
     }
 }

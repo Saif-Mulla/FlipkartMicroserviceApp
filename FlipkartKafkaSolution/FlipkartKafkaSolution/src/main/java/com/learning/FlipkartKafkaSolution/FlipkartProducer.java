@@ -8,7 +8,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 
 public class FlipkartProducer {
     
-    private KafkaProducer<String, String> producer;
+    private KafkaProducer<String, OrderModel> producer;
 
     public FlipkartProducer() {
         this.producer = new KafkaProducer<>(FlipkartProperties.getProducerProperties());
@@ -17,16 +17,17 @@ public class FlipkartProducer {
     public void sendOrders() {
         String topic = "FlipkartOrdersTopic";
         List<OrderModel> orders = List.of(
-            new OrderModel("1", "Book", "Java Programming", 1500, "Alice"),
-            new OrderModel("2", "Mobile", "Samsung S21", 75000, "Bob"),
-            new OrderModel("3", "Car", "Tesla Model 3", 5800000, "Charlie")
+            new OrderModel("1", "Book", "Java Programming", 1500, "Saif"),
+            new OrderModel("2", "Mobile", "Samsung S21", 75000, "Saif2"),
+            new OrderModel("3", "Car", "Tesla Model 3", 5800000, "Saif3")
         );
 
         for (OrderModel order : orders) {
-            ProducerRecord<String, String> record = new ProducerRecord<>(topic, order.getType(), order.toString());
+            ProducerRecord<String, OrderModel> record = new ProducerRecord<>(topic, order.getType(), order);
             producer.send(record);
         }
         
+        producer.flush();
         producer.close();
     }
 
